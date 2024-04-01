@@ -11,6 +11,29 @@ from config import file_path
 
 class Main:
 
+    def txt_chapter(self, filepath, pattern='第.{1,4}章'):
+        """
+        txt文件chapter处理
+        :return:
+        """    
+        path = os.path.join(file_path, filepath)
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"文件不存在，根路名为{path}")
+        file = open(path, 'r', encoding='utf-8')
+        content = file.read()
+        re.split(pattern, content)
+        chapter_list = re.split(pattern, content)
+        for index, value in enumerate(chapter_list):
+            chapter_path = path.replace('.txt','-{}.txt'.format(str(index)))
+            chapter_file = open(chapter_path, 'w')
+            content = value.replace('\n', '').replace('\u3000', '').replace('-', '')
+            text_list = self.txt_long(content.split('。'))
+            text_list = self.txt_short(text_list)
+            for line_index, line in enumerate(text_list):
+                chapter_file.write("{}:{}{}".format(str(line_index),line,"\n"))
+            chapter_file.close()
+        return chapter_list
+
     def txt_handle(self, filepath):
         """
         txt文件处理
